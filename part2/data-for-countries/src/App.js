@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import CountryInfo from './components/CountryInfo';
 
 function App() {
   const [ allCountries, setAllCountries ] = useState([]);
@@ -19,27 +20,38 @@ function App() {
     setInput(filterText);
     const filteredCountries = allCountries.filter((country) => {
       return country.name.common.toLowerCase().indexOf(filterText) > -1;
-    })
+    }).map((item) => ({...item, show: false}));
     setCountries(filteredCountries);
-   }
+  }
+
+  const showInfo = (id) => {
+    const arr = countries.map((item) => {
+      if (item.cca2 === id) {
+        return ({...item, show: !item.show});
+      }
+      else return item;
+    })
+    setCountries(arr);
+  }
 
   return (
     <div>
       <label>find countries</label>
       <input onChange={handleChange} value={input} />
+
       { countries.length > 10 && <p>Too many matches, specify another filter</p>}
-      { countries.length < 10 && countries.length > 1  && countries.map((item) => <p key={item.cca2}>{item.name.common}</p>)}
-      { countries.length === 1 &&
-        <div>
-          <h2>{countries[0].name.common}</h2>
-          <p>Capital: {countries[0].capital[0]}</p>
-          <h3>Lenguages:</h3>
-          <ul>
-            {Object.values(countries[0].languages).map((item) => <li key={item}>{item}</li>)}
-          </ul>
-          <img src={countries[0].flags.png} alt={countries[0].name.common}/>
-        </div>
+
+      { countries.length < 10 && countries.length > 1  && 
+        countries.map((item) => 
+          <div key={item.cca2}>
+            <span>{item.name.common} </span>
+            <button onClick={() => showInfo(item.cca2)}>{item.show ? 'hide' : 'show'}</button>
+            { item.show && <CountryInfo item={item}/> }
+          </div>
+        )
       }
+
+      { countries.length === 1 && <CountryInfo item={countries[0]}/> }
     </div>
   );
 }
