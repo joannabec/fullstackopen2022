@@ -3,12 +3,15 @@ import PersonForm from './components/PersonForm'
 import SearchFilter from './components/SearchFilter'
 import Persons from './components/Persons'
 import services from './services/persons'
+import Notification from './components/Notification'
 
 const App = () => {
   const [persons, setPersons] = useState([]) 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filterTerm, setFilterTerm] = useState('')
+  const [message, setMessage] = useState(null)
+  const [error, setError] = useState(false)
 
   useEffect(() => {
     services.getPersons()
@@ -25,19 +28,40 @@ const App = () => {
     const personToUpdate = persons.find((item) => item.name === newName);
     if(!personToUpdate) {
       services.addPerson({name: newName, number: newNumber})
-        .then((resp) => setPersons(persons.concat(resp)));
-      setNewNumber('');
-      setNewName('');
+        .then((resp) => {
+          setPersons(persons.concat(resp));
+          setError(false)
+          setMessage(`Added ${newName}`)
+          setTimeout(() => {
+            setMessage(null)
+          }, 3000);
+    
+          setNewNumber('');
+          setNewName('');
+        })
     } else {
       const result = window.confirm(`${newName} is already added to the phonebook, replace the old number with the new one?`);
 
       if(result) {
         services.updatePerson({...personToUpdate, number: newNumber})
-        .then((resp) => setPersons(
-          persons.map((item) => item.id === resp.id ? resp : item)
-        ));
-        setNewName('');
-        setNewNumber('');
+        .then((resp) => {
+          setPersons(persons.map((item) => item.id === resp.id ? resp : item))
+          setError(false)
+          setMessage(`The number has been updated`)
+          setTimeout(() => {
+            setMessage(null)
+          }, 3000)
+          setNewName('');
+          setNewNumber('');
+        })
+        .catch(() => {
+          setError(true)
+          setMessage(`Information of ${personToUpdate.name} has already been removed`)
+          setTimeout(() => {
+            setMessage(null)
+          }, 3000);
+        });
+
       }
     } 
   }
@@ -62,6 +86,7 @@ const App = () => {
   return (
     <div>
       <h1>Phonebook</h1>
+      <Notification message={message} error={error}/>
       <SearchFilter handleFilter={handleFilter} filterTerm={filterTerm}/>
       <h2>add a new</h2>
       <PersonForm 
