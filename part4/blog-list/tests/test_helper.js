@@ -1,5 +1,3 @@
-
-
 const initialBlogs = [{
   title: 'React patterns',
   author: 'Michael Chan',

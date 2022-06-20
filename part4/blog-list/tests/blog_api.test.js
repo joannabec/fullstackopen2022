@@ -3,11 +3,13 @@ const supertest = require('supertest')
 const app = require('../app')
 const helper = require('./test_helper')
 const Blog = require('../models/blog')
+const User = require ('../models/user')
 
 const api = supertest(app)
 
 beforeEach(async () => {
   await Blog.deleteMany({})
+  await User.deleteMany({})
 
   for (const blog of helper.initialBlogs) {
     const noteObject = new Blog(blog)
@@ -24,13 +26,13 @@ describe('getting blogs from the app', () => {
   })
 
   test('should have the correct amount', async () => {
-    const res = await api.get('/api/blogs')
-    expect(res.body).toHaveLength(helper.initialBlogs.length)
+    const res = await Blog.find({})
+    expect(res).toHaveLength(helper.initialBlogs.length)
   })
 
   test('should have id as the unique identifier', async () => {
-    const res = await api.get('/api/blogs')
-    expect(res.body[0].id).toBeDefined()
+    const res = await Blog.find({})
+    expect(res[0].id).toBeDefined()
   })
 })
 
@@ -49,10 +51,10 @@ describe('adding a new blog', () => {
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
-    const newBlogList = await api.get('/api/blogs')
-    expect(newBlogList.body).toHaveLength(helper.initialBlogs.length + 1)
+    const newBlogList = await Blog.find({})
+    expect(newBlogList).toHaveLength(helper.initialBlogs.length + 1)
 
-    const contents = newBlogList.body.map(b => b.title)
+    const contents = newBlogList.map(b => b.title)
     expect(contents).toContain('Type wars')
   })
 
@@ -69,8 +71,8 @@ describe('adding a new blog', () => {
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
-    const newBlogList = await api.get('/api/blogs')
-    const blogLikes = newBlogList.body.filter(item => item.id === response.body.id)
+    const newBlogList = await Blog.find({})
+    const blogLikes = newBlogList.filter(item => item.id === response.body.id)
     expect(blogLikes[0].likes).toBe(0)
   })
 
@@ -109,25 +111,25 @@ describe('adding a new blog', () => {
 
 describe('deleting a blog', () => {
   test('should succeed with a valid id', async () => {
-    const allBlogsBefore = await api.get('/api/blogs')
-    const blogToDelete = allBlogsBefore.body[0]
+    const allBlogsBefore = await Blog.find({})
+    const blogToDelete = allBlogsBefore[0]
 
     await api
       .delete(`/api/blogs/${blogToDelete.id}`)
       .expect(204)
 
-    const allBlogsAfter = await api.get('/api/blogs')
-    expect(allBlogsAfter.body).toHaveLength(allBlogsBefore.body.length - 1)
+    const allBlogsAfter = await Blog.find({})
+    expect(allBlogsAfter).toHaveLength(allBlogsBefore.length - 1)
 
-    const blogsId = allBlogsAfter.body.map(b => b.id)
+    const blogsId = allBlogsAfter.map(b => b.id)
     expect(blogsId).not.toContain(blogToDelete.id)
   })
 })
 
 describe('updating likes of a blog', () => {
   test('should succeed if the data is correct', async () => {
-    const allBlogsBefore = await api.get('/api/blogs')
-    const blogToUpdate = allBlogsBefore.body[0]
+    const allBlogsBefore = await Blog.find({})
+    const blogToUpdate = allBlogsBefore[0]
 
     const blog = { likes: 5 }
 
@@ -136,13 +138,13 @@ describe('updating likes of a blog', () => {
       .send(blog)
       .expect(200)
 
-    const allBlogsAfter = await api.get('/api/blogs')
-    expect(allBlogsAfter.body[0].likes).toBe(blog.likes)
+    const allBlogsAfter = await Blog.find({})
+    expect(allBlogsAfter[0].likes).toBe(blog.likes)
   })
 
   test('should fail if the data is invalid', async () => {
-    const allBlogs = await api.get('/api/blogs')
-    const blogToUpdate = allBlogs.body[0]
+    const allBlogs = await Blog.find({})
+    const blogToUpdate = allBlogs[0]
 
     const blog = { likes: 'notanumber' }
 
@@ -159,6 +161,66 @@ describe('updating likes of a blog', () => {
       .put('/api/blogs/123456')
       .send(blog)
       .expect(400)
+  })
+})
+
+describe('creating an user', () => {
+  test('should succeed if the data is valid', async () => {
+    const user = {
+      username: 'EdCeu',
+      name: 'Edson Mejia',
+      password: 'contraseña'
+    }
+
+    await api.post('/api/users')
+      .send(user)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    const usersList = await User.find({})
+    expect(usersList).toHaveLength(1)
+    expect(usersList[0].username).toBe(user.username)
+  })
+
+  test('should fail if the username or password is invalid', async () => {
+    const user = {
+      username: 'Ed',
+      name: 'Edson Mejia',
+      password: 'contraseña'
+    }
+
+    const user2 = {
+      username: 'EdCeu',
+      name: 'Edson Mejia',
+      password: 'co'
+    }
+
+    await api.post('/api/users')
+      .send(user)
+      .expect(400)
+
+    await api.post('/api/users')
+      .send(user2)
+      .expect(400)
+
+    const usersList = await User.find({})
+    expect(usersList).toHaveLength(0)
+    expect(usersList).toEqual([])
+  })
+
+  test('should fail if data is missing', async () => {
+    const user = {
+      username: '',
+      name: '',
+      password: ''
+    }
+    await api.post('/api/users')
+      .send(user)
+      .expect(400)
+
+    const usersList = await User.find({})
+    expect(usersList).toHaveLength(0)
+    expect(usersList).toEqual([])
   })
 })
 
