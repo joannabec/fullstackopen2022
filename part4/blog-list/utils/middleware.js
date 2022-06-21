@@ -1,5 +1,6 @@
 const logger = require('./logger')
 const morgan = require('morgan')
+const jwt = require('jsonwebtoken')
 
 const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' })
@@ -26,9 +27,15 @@ const tokenExtractor = (request, response, next) => {
   next()
 }
 
+const userExtractor = (request, response, next) => {
+  request.user = jwt.verify(request.token, process.env.SECRET)
+  next()
+}
+
 module.exports = {
   morgan,
   unknownEndpoint,
   errorHandler,
-  tokenExtractor
+  tokenExtractor,
+  userExtractor
 }

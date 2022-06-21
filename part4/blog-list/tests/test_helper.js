@@ -1,3 +1,5 @@
+const jwt = require('jsonwebtoken')
+
 const initialBlogs = [{
   title: 'React patterns',
   author: 'Michael Chan',
@@ -30,6 +32,23 @@ const initialBlogs = [{
 },
 ]
 
+const generateToken = user => {
+  const token = jwt.sign(
+    user,
+    process.env.SECRET
+  )
+
+  return token
+}
+
+const userForTesting = {
+  username: 'Hanna',
+  name: 'Hanna Smith',
+  passwordHash: 'xxxxxxxxxxxx'
+}
+
 module.exports = {
-  initialBlogs
+  initialBlogs,
+  generateToken,
+  userForTesting
 }

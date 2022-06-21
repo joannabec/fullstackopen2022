@@ -11,10 +11,20 @@ beforeEach(async () => {
   await Blog.deleteMany({})
   await User.deleteMany({})
 
+  const userObject = new User(helper.userForTesting)
+  await userObject.save()
+
   for (const blog of helper.initialBlogs) {
-    const noteObject = new Blog(blog)
-    await noteObject.save()
+    const blogObject = new Blog({
+      title: blog.title,
+      author: blog.author,
+      url: blog.url,
+      likes: blog.likes,
+      user: userObject._id
+    })
+    await blogObject.save()
   }
+
 }, 100000)
 
 describe('getting blogs from the app', () => {
@@ -45,9 +55,14 @@ describe('adding a new blog', () => {
       likes: 2,
     }
 
+    const user = await User.find({})
+    const userForToken = user[0].toJSON()
+    const token = helper.generateToken({ username: userForToken.username, id: userForToken.id })
+
     await api
       .post('/api/blogs')
       .send(newBlog)
+      .set('Authorization', `Bearer ${token}`)
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
@@ -65,9 +80,14 @@ describe('adding a new blog', () => {
       url: 'http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html',
     }
 
+    const user = await User.find({})
+    const userForToken = user[0].toJSON()
+    const token = helper.generateToken({ username: userForToken.username, id: userForToken.id })
+
     const response = await api
       .post('/api/blogs')
       .send(newBlog)
+      .set('Authorization', `Bearer ${token}`)
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
@@ -83,9 +103,14 @@ describe('adding a new blog', () => {
       likes: 3
     }
 
+    const user = await User.find({})
+    const userForToken = user[0].toJSON()
+    const token = helper.generateToken({ username: userForToken.username, id: userForToken.id })
+
     await api
       .post('/api/blogs')
       .send(newBlog)
+      .set('Authorization', `Bearer ${token}`)
       .expect(400)
 
     const blogList = await api.get('/api/blogs')
@@ -99,9 +124,14 @@ describe('adding a new blog', () => {
       likes: 3
     }
 
+    const user = await User.find({})
+    const userForToken = user[0].toJSON()
+    const token = helper.generateToken({ username: userForToken.username, id: userForToken.id })
+
     await api
       .post('/api/blogs')
       .send(newBlog)
+      .set('Authorization', `Bearer ${token}`)
       .expect(400)
 
     const blogList = await api.get('/api/blogs')
@@ -114,8 +144,13 @@ describe('deleting a blog', () => {
     const allBlogsBefore = await Blog.find({})
     const blogToDelete = allBlogsBefore[0]
 
+    const user = await User.find({})
+    const userForToken = user[0].toJSON()
+    const token = helper.generateToken({ username: userForToken.username, id: userForToken.id })
+
     await api
       .delete(`/api/blogs/${blogToDelete.id}`)
+      .set('Authorization', `Bearer ${token}`)
       .expect(204)
 
     const allBlogsAfter = await Blog.find({})
@@ -167,8 +202,8 @@ describe('updating likes of a blog', () => {
 describe('creating an user', () => {
   test('should succeed if the data is valid', async () => {
     const user = {
-      username: 'EdCeu',
-      name: 'Edson Mejia',
+      username: 'Juanito Nieves',
+      name: 'Jhon Snow',
       password: 'contraseña'
     }
 
@@ -178,20 +213,21 @@ describe('creating an user', () => {
       .expect('Content-Type', /application\/json/)
 
     const usersList = await User.find({})
-    expect(usersList).toHaveLength(1)
-    expect(usersList[0].username).toBe(user.username)
+    expect(usersList).toHaveLength(2)
+    expect(usersList[1].username).toBe(user.username)
   })
 
   test('should fail if the username or password is invalid', async () => {
+    const firstUsersList = await User.find({})
     const user = {
-      username: 'Ed',
-      name: 'Edson Mejia',
+      username: 'So',
+      name: 'Han Solo',
       password: 'contraseña'
     }
 
     const user2 = {
-      username: 'EdCeu',
-      name: 'Edson Mejia',
+      username: 'Solo',
+      name: 'Han Solo',
       password: 'co'
     }
 
@@ -203,12 +239,13 @@ describe('creating an user', () => {
       .send(user2)
       .expect(400)
 
-    const usersList = await User.find({})
-    expect(usersList).toHaveLength(0)
-    expect(usersList).toEqual([])
+    const lastUsersList = await User.find({})
+    expect(lastUsersList).toHaveLength(1)
+    expect(lastUsersList).toEqual(firstUsersList)
   })
 
   test('should fail if data is missing', async () => {
+    const firstUsersList = await User.find({})
     const user = {
       username: '',
       name: '',
@@ -218,9 +255,9 @@ describe('creating an user', () => {
       .send(user)
       .expect(400)
 
-    const usersList = await User.find({})
-    expect(usersList).toHaveLength(0)
-    expect(usersList).toEqual([])
+    const lastUsersList = await User.find({})
+    expect(lastUsersList).toHaveLength(1)
+    expect(lastUsersList).toEqual(firstUsersList)
   })
 })
 
