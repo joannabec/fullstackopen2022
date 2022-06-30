@@ -11,6 +11,13 @@ usersRouter.get('/', async (request, response) => {
 usersRouter.post('/', async (request, response) => {
   const { username, name, password } = request.body
 
+  const repeatedUsername = await User.findOne({ username })
+  if (repeatedUsername) {
+    return response.status(400).json({
+      error: 'username must be unique'
+    })
+  }
+
   if (password.length <= 3) {
     response.status(400).send({ error: 'password must be at least 3 characters long' })
   }
