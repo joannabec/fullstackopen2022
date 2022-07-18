@@ -1,9 +1,9 @@
 import axios from 'axios'
 const baseUrl = '/api/blogs'
 
-const getAll = () => {
-  const request = axios.get(baseUrl)
-  return request.then(response => response.data)
+const getAll = async () => {
+  const response = await axios.get(baseUrl)
+  return response.data
 }
 
 const newNote = async (blog) => {
@@ -16,5 +16,20 @@ const newNote = async (blog) => {
   return newBlog  
 }
 
-const blogService = { getAll, newNote }
+const updateBlog = async (blog, id) => {
+  const response = await axios.put(`${baseUrl}/${id}`, blog)
+  return response.data
+}
+
+const removeBlog = async (id) => {
+  const user = JSON.parse(window.localStorage.getItem('user'))
+  const response = await axios.delete(`${baseUrl}/${id}`, {
+    headers: {
+      Authorization: `Bearer ${user.token}`,
+    }
+  })
+  return response
+}
+
+const blogService = { getAll, newNote, updateBlog, removeBlog }
 export default blogService

@@ -20,10 +20,16 @@ const App = () => {
     if(userLogged) {
       setUser(JSON.parse(userLogged))
     }
-    blogService.getAll().then(blogs => 
-      setBlogs( blogs )
-    )  
-  }, [])
+    const getBlogs = async () => {
+      try {
+        const allBlogs = await blogService.getAll()
+        setBlogs(allBlogs.sort((a, b) => b.likes - a.likes))
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    getBlogs()
+  }, [blogs])
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -61,6 +67,18 @@ const App = () => {
       setTimeout(() => {setMsg(null)}, 3000);
     }
   }
+
+  const handleRemoveBlog = async (id) => {
+    try {
+      const result = await blogService.removeBlog(id)
+      if(result.status === 204) {
+        setMsg({ message: 'The item has been deleted' })
+        setTimeout(() => {setMsg(null)}, 3000);
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
  
   return (
     <div>
@@ -84,7 +102,7 @@ const App = () => {
               />
             </Togglable>
           </div>
-          {blogs.map(blog => <Blog key={blog.id} blog={blog} /> )}
+          {blogs.map(blog => <Blog key={blog.id} blog={blog} removeBlog={handleRemoveBlog} user={user} /> )}
         </div>
       }
     </div>

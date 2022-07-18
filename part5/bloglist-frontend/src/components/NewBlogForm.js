@@ -20,9 +20,17 @@ const NewBlogForm = ({ createBlog }) => {
     if (successful) setBlog({ title: '', author: '', url: '' })
   }
 
+  // styles
+  const fieldContainer = {
+    width: '30%',
+    display: 'flex',
+    flexDirection: 'column',
+    marginBottom: '10px'
+  }
+
   return (
   <form onSubmit={handleCreateBlog}>
-    <div>
+    <div style={fieldContainer}>
       <label htmlFor="title">title: </label>
       <input
         id="title"
@@ -31,7 +39,7 @@ const NewBlogForm = ({ createBlog }) => {
         onChange={handleInputChange}
       />
     </div>
-    <div>
+    <div style={fieldContainer}>
       <label htmlFor="author">author: </label>
       <input
         id="author"
@@ -40,7 +48,7 @@ const NewBlogForm = ({ createBlog }) => {
         onChange={handleInputChange}
       />
     </div>
-    <div>
+    <div style={fieldContainer}>
       <label htmlFor="url">url: </label>
       <input
         id="url"
