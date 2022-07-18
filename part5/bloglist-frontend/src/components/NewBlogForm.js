@@ -1,5 +1,27 @@
-const NewBlogForm = ({handleCreateNote, handleInputChange, blog}) => (
-  <form onSubmit={handleCreateNote}>
+import { useState } from 'react'
+
+const NewBlogForm = ({ createBlog }) => {
+  const [ blog, setBlog ] = useState({
+    title: '', author: '', url: ''
+  })
+
+  const handleInputChange = (e) => {
+    const input = e.target.name;
+    const data = e.target.value;
+    setBlog((prevState) => ({
+      ...prevState,
+      [input]: data
+    }))
+  }
+
+  const handleCreateBlog = async (e) => {
+    e.preventDefault()
+    const successful = await createBlog(blog)
+    if (successful) setBlog({ title: '', author: '', url: '' })
+  }
+
+  return (
+  <form onSubmit={handleCreateBlog}>
     <div>
       <label htmlFor="title">title: </label>
       <input
@@ -29,6 +51,6 @@ const NewBlogForm = ({handleCreateNote, handleInputChange, blog}) => (
     </div>
     <button type="submit">create</button>
   </form>
-)
+)}
 
 export default NewBlogForm
