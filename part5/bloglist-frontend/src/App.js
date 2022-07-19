@@ -32,8 +32,8 @@ const App = () => {
   }, [blogs])
 
   const handleLogin = async (e) => {
-    e.preventDefault();
-    
+    e.preventDefault()
+
     try {
       const response = await loginService.login({ username, password })
       setUser(response)
@@ -42,7 +42,7 @@ const App = () => {
       setPassword('')
     } catch (error) {
       setMsg({ message: error.response.data.error, type: 'error' })
-      setTimeout(() => {setMsg(null)}, 3000);
+      setTimeout(() => {setMsg(null)}, 3000)
     }
   }
 
@@ -59,12 +59,12 @@ const App = () => {
         message: `the blog ${newBlog.title} by ${newBlog.author} was added`,
         type: ''
       })
-      setTimeout(() => {setMsg(null)}, 3000);
+      setTimeout(() => {setMsg(null)}, 3000)
       newBlogFormRef.current.handleVisibility()
       return true
     } catch (error) {
       setMsg({ message: error.response.data.error, type: 'error' })
-      setTimeout(() => {setMsg(null)}, 3000);
+      setTimeout(() => {setMsg(null)}, 3000)
     }
   }
 
@@ -73,31 +73,31 @@ const App = () => {
       const result = await blogService.removeBlog(id)
       if(result.status === 204) {
         setMsg({ message: 'The item has been deleted' })
-        setTimeout(() => {setMsg(null)}, 3000);
+        setTimeout(() => {setMsg(null)}, 3000)
       }
     } catch (error) {
       console.log(error)
     }
   }
- 
+
   return (
     <div>
       <h1>blogs</h1>
       {msg && <AlertMsg alert={msg}/>}
-      {!user && <LoginForm 
+      {!user && <LoginForm
         username={username}
         password={password}
         setPassword={setPassword}
         setUsername={setUsername}
         handleLogin={handleLogin}
       />}
-      {user && 
+      {user &&
         <div>
           <span>{ user.name } logged in</span> <button onClick={handleLogout}>log out</button>
           <div>
             <h2>create new</h2>
             <Togglable buttonLabel="Add blog" ref={newBlogFormRef}>
-              <NewBlogForm 
+              <NewBlogForm
                 createBlog={handleCreateBlog}
               />
             </Togglable>

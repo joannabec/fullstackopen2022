@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types'
+
 const AlertMsg = ({ alert }) => {
   const style = {
     color: alert.type === 'error' ? 'red' : 'green',
@@ -14,6 +16,10 @@ const AlertMsg = ({ alert }) => {
       {alert.message}
     </span>
   )
+}
+
+AlertMsg.propTypes = {
+  alert: PropTypes.object.isRequired
 }
 
 export default AlertMsg

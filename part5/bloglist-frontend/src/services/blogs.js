@@ -13,7 +13,7 @@ const newNote = async (blog) => {
       Authorization: `Bearer ${user.token}`,
     }
   })
-  return newBlog  
+  return newBlog
 }
 
 const updateBlog = async (blog, id) => {
