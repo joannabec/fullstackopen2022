@@ -38,6 +38,7 @@ const NewBlogForm = ({ createBlog }) => {
           value={blog.title}
           name="title"
           onChange={handleInputChange}
+          placeholder="Add the title"
         />
       </div>
       <div style={fieldContainer}>
@@ -47,6 +48,7 @@ const NewBlogForm = ({ createBlog }) => {
           value={blog.author}
           name="author"
           onChange={handleInputChange}
+          placeholder="Add the author"
         />
       </div>
       <div style={fieldContainer}>
@@ -56,6 +58,7 @@ const NewBlogForm = ({ createBlog }) => {
           value={blog.url}
           name="url"
           onChange={handleInputChange}
+          placeholder="Add the url"
         />
       </div>
       <button type="submit">create</button>

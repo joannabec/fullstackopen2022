@@ -1,8 +1,7 @@
 import { useState } from 'react'
 import PropTypes from 'prop-types'
-import blogService from '../services/blogs'
 
-const Blog = ({ blog, removeBlog, user }) => {
+const Blog = ({ blog, removeBlog, updateLike, user }) => {
   const [ visibility, setVisibility ] = useState(false)
   const blogStyle = {
     paddingTop: 10,
@@ -18,13 +17,7 @@ const Blog = ({ blog, removeBlog, user }) => {
   }
 
   const handleLike = () => {
-    blogService.updateBlog({
-      user: blog.user.id,
-      likes: blog.likes + 1,
-      author: blog.author,
-      title: blog.title,
-      url: blog.url
-    }, blog.id)
+    updateLike(blog, blog.id)
   }
 
   const handleRemove = async () => {
@@ -34,13 +27,13 @@ const Blog = ({ blog, removeBlog, user }) => {
 
   return (
     <div style={blogStyle}>
-      <span>{blog.title} {blog.author} </span>
+      <span>{blog.title} {blog.author}</span>
       <button onClick={handleVisibility}>{ visibility ? 'hide' : 'view' }</button>
       { visibility &&
         <div>
-          <span>{blog.url}</span>
+          <span className="url">{blog.url}</span>
           <div>
-            <span>likes {blog.likes} </span>
+            <span className="likes">likes {blog.likes} </span>
             <button onClick={handleLike}>like</button>
           </div>
           <span>{blog.user.name}</span>

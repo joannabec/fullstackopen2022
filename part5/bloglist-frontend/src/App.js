@@ -68,6 +68,16 @@ const App = () => {
     }
   }
 
+  const handleUpdateLike = (blog) => {
+    blogService.updateBlog({
+      user: blog.user.id,
+      likes: blog.likes + 1,
+      author: blog.author,
+      title: blog.title,
+      url: blog.url
+    }, blog.id)
+  }
+
   const handleRemoveBlog = async (id) => {
     try {
       const result = await blogService.removeBlog(id)
@@ -102,7 +112,15 @@ const App = () => {
               />
             </Togglable>
           </div>
-          {blogs.map(blog => <Blog key={blog.id} blog={blog} removeBlog={handleRemoveBlog} user={user} /> )}
+          {blogs.map(blog =>
+            <Blog
+              key={blog.id}
+              blog={blog}
+              removeBlog={handleRemoveBlog}
+              user={user}
+              updateLike={handleUpdateLike}
+            />
+          )}
         </div>
       }
     </div>
