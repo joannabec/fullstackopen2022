@@ -5,7 +5,7 @@ import userEvent from '@testing-library/user-event'
 import NewBlogForm from './NewBlogForm'
 
 describe('Creating a new blog', () => {
-  test('should not show url or number of likes by default', async () => {
+  test('should call the function passed as prop with the correct information', async () => {
     const createBlog = jest.fn()
     render(<NewBlogForm createBlog={createBlog} />)
 

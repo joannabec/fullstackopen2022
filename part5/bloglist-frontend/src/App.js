@@ -29,7 +29,7 @@ const App = () => {
       }
     }
     getBlogs()
-  }, [blogs])
+  }, [])
 
   const handleLogin = async (e) => {
     e.preventDefault()
@@ -76,12 +76,16 @@ const App = () => {
       title: blog.title,
       url: blog.url
     }, blog.id)
+
+    const allBlogs = blogs.map(item => item.id === blog.id ? { ...item, likes: item.likes + 1 } : item)
+    setBlogs(allBlogs.sort((a, b) => b.likes - a.likes))
   }
 
   const handleRemoveBlog = async (id) => {
     try {
       const result = await blogService.removeBlog(id)
       if(result.status === 204) {
+        setBlogs(blogs.filter(item => item.id !== id))
         setMsg({ message: 'The item has been deleted' })
         setTimeout(() => {setMsg(null)}, 3000)
       }

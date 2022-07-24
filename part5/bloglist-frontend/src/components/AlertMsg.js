@@ -12,7 +12,7 @@ const AlertMsg = ({ alert }) => {
   }
 
   return (
-    <span style={style}>
+    <span className="alert" style={style}>
       {alert.message}
     </span>
   )
