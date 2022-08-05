@@ -9,15 +9,22 @@ const notificationSlice = createSlice({
     },
     removeMsg() {
       return null
+    },
+    timer(state, action) {
+      return action.payload
     }
   }
 })
 export const { setMsg, removeMsg } = notificationSlice.actions
 
+let timeout
 export const setNotificacion = (string, sec) => {
-  return dispatch => {
+  return (dispatch, setState) => {
     dispatch(setMsg(string))
-    setTimeout(() => {
+
+    if(setState().notification) clearTimeout(timeout)
+
+    timeout = setTimeout(() => {
       dispatch(removeMsg())
     }, sec * 1000);
   }
