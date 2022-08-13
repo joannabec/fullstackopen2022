@@ -12,20 +12,27 @@ describe('Rendering the component <Blog />', () => {
     user: {
       id: '5a43e6b6c37f3d065eaaa581',
       username: 'Jhon',
-      name: 'Jhon Smith'
+      name: 'Jhon Smith',
     },
     likes: 3,
     author: 'Joel Spolsky',
     title: 'The Joel Test: 12 Steps to Better Code',
-    url: 'https://www.joelonsoftware.com/2000/08/09/the-joel-test-12-steps-to-better-code/'
+    url: 'https://www.joelonsoftware.com/2000/08/09/the-joel-test-12-steps-to-better-code/',
   }
   const user = {
-    username: 'John'
+    username: 'John',
   }
 
   let container
   beforeEach(() => {
-    container = render(<Blog blog={blog} removeBlog={removeBlog} user={user} updateLike={updateLike} />).container
+    container = render(
+      <Blog
+        blog={blog}
+        removeBlog={removeBlog}
+        user={user}
+        updateLike={updateLike}
+      />
+    ).container
   })
   test('should not show url or number of likes by default', () => {
     expect(container.querySelector('.url')).not.toBeInTheDocument()

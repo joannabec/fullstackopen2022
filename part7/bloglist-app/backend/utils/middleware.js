@@ -16,7 +16,7 @@ const errorHandler = (error, request, response, next) => {
     return response.status(400).json({ error: error.message })
   } else if (error.name === 'JsonWebTokenError') {
     return response.status(401).json({
-      error: 'invalid token'
+      error: 'invalid token',
     })
   }
 
@@ -26,7 +26,10 @@ const errorHandler = (error, request, response, next) => {
 const userExtractor = async (request, response, next) => {
   const authorization = request.get('authorization')
   if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
-    const decodedToken = jwt.verify(authorization.substring(7), process.env.SECRET)
+    const decodedToken = jwt.verify(
+      authorization.substring(7),
+      process.env.SECRET
+    )
     if (decodedToken) {
       request.user = await User.findById(decodedToken.id)
     }
@@ -36,5 +39,8 @@ const userExtractor = async (request, response, next) => {
 }
 
 module.exports = {
-  unknownEndpoint, errorHandler, userExtractor, morgan
+  unknownEndpoint,
+  errorHandler,
+  userExtractor,
+  morgan,
 }

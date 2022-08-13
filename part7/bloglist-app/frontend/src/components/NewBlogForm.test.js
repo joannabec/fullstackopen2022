@@ -18,13 +18,16 @@ describe('Creating a new blog', () => {
 
     await user.type(inputTitle, 'The Joel Test: 12 Steps to Better Code')
     await user.type(inputAuthor, 'Joel Spolsky')
-    await user.type(inputUrl, 'https://www.joelonsoftware.com/2000/08/09/the-joel-test-12-steps-to-better-code/')
+    await user.type(
+      inputUrl,
+      'https://www.joelonsoftware.com/2000/08/09/the-joel-test-12-steps-to-better-code/'
+    )
     await user.click(button)
 
     expect(createBlog).toHaveBeenCalledWith({
       author: 'Joel Spolsky',
       title: 'The Joel Test: 12 Steps to Better Code',
-      url: 'https://www.joelonsoftware.com/2000/08/09/the-joel-test-12-steps-to-better-code/'
+      url: 'https://www.joelonsoftware.com/2000/08/09/the-joel-test-12-steps-to-better-code/',
     })
   })
 })

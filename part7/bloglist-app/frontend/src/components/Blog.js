@@ -2,14 +2,14 @@ import { useState } from 'react'
 import PropTypes from 'prop-types'
 
 const Blog = ({ blog, removeBlog, updateLike, user }) => {
-  const [ visibility, setVisibility ] = useState(false)
+  const [visibility, setVisibility] = useState(false)
   const blogStyle = {
     paddingTop: 10,
     paddingBottom: 10,
     paddingLeft: 5,
     border: 'solid',
     borderWidth: 1,
-    margin: '10px 0'
+    margin: '10px 0',
   }
 
   const handleVisibility = () => {
@@ -22,14 +22,18 @@ const Blog = ({ blog, removeBlog, updateLike, user }) => {
 
   const handleRemove = async () => {
     const confirmation = window.confirm(`Remove blog ${blog.title}`)
-    if(confirmation) removeBlog(blog.id)
+    if (confirmation) removeBlog(blog.id)
   }
 
   return (
     <div style={blogStyle}>
-      <span className='title'>{blog.title} {blog.author}</span>
-      <button className="view" onClick={handleVisibility}>{ visibility ? 'hide' : 'view' }</button>
-      { visibility &&
+      <span className="title">
+        {blog.title} {blog.author}
+      </span>
+      <button className="view" onClick={handleVisibility}>
+        {visibility ? 'hide' : 'view'}
+      </button>
+      {visibility && (
         <div>
           <span className="url">{blog.url}</span>
           <div>
@@ -37,13 +41,15 @@ const Blog = ({ blog, removeBlog, updateLike, user }) => {
             <button onClick={handleLike}>like</button>
           </div>
           <span>{blog.user.name}</span>
-          { user.username === blog.user.username &&
+          {user.username === blog.user.username && (
             <div>
-              <button className="remove" onClick={handleRemove}>remove</button>
+              <button className="remove" onClick={handleRemove}>
+                remove
+              </button>
             </div>
-          }
+          )}
         </div>
-      }
+      )}
     </div>
   )
 }
@@ -51,7 +57,7 @@ const Blog = ({ blog, removeBlog, updateLike, user }) => {
 Blog.propTypes = {
   blog: PropTypes.object.isRequired,
   removeBlog: PropTypes.func.isRequired,
-  user: PropTypes.object.isRequired
+  user: PropTypes.object.isRequired,
 }
 
 export default Blog

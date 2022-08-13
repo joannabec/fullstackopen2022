@@ -12,7 +12,8 @@
 // -- This is a parent command --
 Cypress.Commands.add('login', ({ username, password }) => {
   cy.request('POST', 'http://localhost:3003/api/login', {
-    username, password
+    username,
+    password,
   }).then(res => {
     localStorage.setItem('user', JSON.stringify(res.body))
     cy.visit('http://localhost:3000')
@@ -25,8 +26,8 @@ Cypress.Commands.add('newBlog', ({ title, author, url, likes = 0 }) => {
     method: 'POST',
     body: { title, author, url, likes },
     headers: {
-      'Authorization': `bearer ${JSON.parse(localStorage.getItem('user')).token}`
-    }
+      Authorization: `bearer ${JSON.parse(localStorage.getItem('user')).token}`,
+    },
   })
   cy.visit('http://localhost:3000')
 })
@@ -35,11 +36,12 @@ Cypress.Commands.add('newLogin', () => {
   const newUser = {
     username: 'Jhonny',
     name: 'Jhonny Zarza',
-    password: 'contraseña'
+    password: 'contraseña',
   }
   cy.request('POST', 'http://localhost:3003/api/users', newUser)
   cy.request('POST', 'http://localhost:3003/api/login', {
-    username: 'Jhonny', password: 'contraseña'
+    username: 'Jhonny',
+    password: 'contraseña',
   }).then(res => {
     localStorage.setItem('user', JSON.stringify(res.body))
     cy.visit('http://localhost:3000')

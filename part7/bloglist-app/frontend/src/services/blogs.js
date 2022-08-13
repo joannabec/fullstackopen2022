@@ -6,12 +6,12 @@ const getAll = async () => {
   return response.data
 }
 
-const newNote = async (blog) => {
+const newNote = async blog => {
   const user = JSON.parse(window.localStorage.getItem('user'))
   const newBlog = await axios.post(baseUrl, blog, {
     headers: {
       Authorization: `Bearer ${user.token}`,
-    }
+    },
   })
   return newBlog
 }
@@ -21,12 +21,12 @@ const updateBlog = async (blog, id) => {
   return response.data
 }
 
-const removeBlog = async (id) => {
+const removeBlog = async id => {
   const user = JSON.parse(window.localStorage.getItem('user'))
   const response = await axios.delete(`${baseUrl}/${id}`, {
     headers: {
       Authorization: `Bearer ${user.token}`,
-    }
+    },
   })
   return response
 }

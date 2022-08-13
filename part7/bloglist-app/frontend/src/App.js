@@ -17,7 +17,7 @@ const App = () => {
 
   useEffect(() => {
     const userLogged = window.localStorage.getItem('user')
-    if(userLogged) {
+    if (userLogged) {
       setUser(JSON.parse(userLogged))
     }
     const getBlogs = async () => {
@@ -31,7 +31,7 @@ const App = () => {
     getBlogs()
   }, [])
 
-  const handleLogin = async (e) => {
+  const handleLogin = async e => {
     e.preventDefault()
 
     try {
@@ -42,7 +42,9 @@ const App = () => {
       setPassword('')
     } catch (error) {
       setMsg({ message: error.response.data.error, type: 'error' })
-      setTimeout(() => {setMsg(null)}, 3000)
+      setTimeout(() => {
+        setMsg(null)
+      }, 3000)
     }
   }
 
@@ -51,43 +53,54 @@ const App = () => {
     setUser(null)
   }
 
-  const handleCreateBlog = async (newBlog) => {
+  const handleCreateBlog = async newBlog => {
     try {
       const res = await blogService.newNote(newBlog)
       setBlogs(blogs.concat(res.data))
       setMsg({
         message: `the blog ${newBlog.title} by ${newBlog.author} was added`,
-        type: ''
+        type: '',
       })
-      setTimeout(() => {setMsg(null)}, 3000)
+      setTimeout(() => {
+        setMsg(null)
+      }, 3000)
       newBlogFormRef.current.handleVisibility()
       return true
     } catch (error) {
       setMsg({ message: error.response.data.error, type: 'error' })
-      setTimeout(() => {setMsg(null)}, 3000)
+      setTimeout(() => {
+        setMsg(null)
+      }, 3000)
     }
   }
 
-  const handleUpdateLike = (blog) => {
-    blogService.updateBlog({
-      user: blog.user.id,
-      likes: blog.likes + 1,
-      author: blog.author,
-      title: blog.title,
-      url: blog.url
-    }, blog.id)
+  const handleUpdateLike = blog => {
+    blogService.updateBlog(
+      {
+        user: blog.user.id,
+        likes: blog.likes + 1,
+        author: blog.author,
+        title: blog.title,
+        url: blog.url,
+      },
+      blog.id
+    )
 
-    const allBlogs = blogs.map(item => item.id === blog.id ? { ...item, likes: item.likes + 1 } : item)
+    const allBlogs = blogs.map(item =>
+      item.id === blog.id ? { ...item, likes: item.likes + 1 } : item
+    )
     setBlogs(allBlogs.sort((a, b) => b.likes - a.likes))
   }
 
-  const handleRemoveBlog = async (id) => {
+  const handleRemoveBlog = async id => {
     try {
       const result = await blogService.removeBlog(id)
-      if(result.status === 204) {
+      if (result.status === 204) {
         setBlogs(blogs.filter(item => item.id !== id))
         setMsg({ message: 'The item has been deleted' })
-        setTimeout(() => {setMsg(null)}, 3000)
+        setTimeout(() => {
+          setMsg(null)
+        }, 3000)
       }
     } catch (error) {
       console.log(error)
@@ -97,26 +110,27 @@ const App = () => {
   return (
     <div>
       <h1>blogs</h1>
-      {msg && <AlertMsg alert={msg}/>}
-      {!user && <LoginForm
-        username={username}
-        password={password}
-        setPassword={setPassword}
-        setUsername={setUsername}
-        handleLogin={handleLogin}
-      />}
-      {user &&
+      {msg && <AlertMsg alert={msg} />}
+      {!user && (
+        <LoginForm
+          username={username}
+          password={password}
+          setPassword={setPassword}
+          setUsername={setUsername}
+          handleLogin={handleLogin}
+        />
+      )}
+      {user && (
         <div>
-          <span>{ user.name } logged in</span> <button onClick={handleLogout}>log out</button>
+          <span>{user.name} logged in</span>{' '}
+          <button onClick={handleLogout}>log out</button>
           <div>
             <h2>create new</h2>
             <Togglable buttonLabel="Add blog" ref={newBlogFormRef}>
-              <NewBlogForm
-                createBlog={handleCreateBlog}
-              />
+              <NewBlogForm createBlog={handleCreateBlog} />
             </Togglable>
           </div>
-          {blogs.map(blog =>
+          {blogs.map(blog => (
             <Blog
               key={blog.id}
               blog={blog}
@@ -124,9 +138,9 @@ const App = () => {
               user={user}
               updateLike={handleUpdateLike}
             />
-          )}
+          ))}
         </div>
-      }
+      )}
     </div>
   )
 }

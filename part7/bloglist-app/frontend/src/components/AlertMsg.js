@@ -8,7 +8,7 @@ const AlertMsg = ({ alert }) => {
     borderStyle: 'solid',
     borderRadius: 5,
     padding: 10,
-    marginBottom: 10
+    marginBottom: 10,
   }
 
   return (
@@ -19,7 +19,7 @@ const AlertMsg = ({ alert }) => {
 }
 
 AlertMsg.propTypes = {
-  alert: PropTypes.object.isRequired
+  alert: PropTypes.object.isRequired,
 }
 
 export default AlertMsg

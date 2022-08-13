@@ -2,20 +2,22 @@ import { useState } from 'react'
 import PropTypes from 'prop-types'
 
 const NewBlogForm = ({ createBlog }) => {
-  const [ blog, setBlog ] = useState({
-    title: '', author: '', url: ''
+  const [blog, setBlog] = useState({
+    title: '',
+    author: '',
+    url: '',
   })
 
-  const handleInputChange = (e) => {
+  const handleInputChange = e => {
     const input = e.target.name
     const data = e.target.value
-    setBlog((prevState) => ({
+    setBlog(prevState => ({
       ...prevState,
-      [input]: data
+      [input]: data,
     }))
   }
 
-  const handleCreateBlog = async (e) => {
+  const handleCreateBlog = async e => {
     e.preventDefault()
     const successful = await createBlog(blog)
     if (successful) setBlog({ title: '', author: '', url: '' })
@@ -26,7 +28,7 @@ const NewBlogForm = ({ createBlog }) => {
     width: '30%',
     display: 'flex',
     flexDirection: 'column',
-    marginBottom: '10px'
+    marginBottom: '10px',
   }
 
   return (
@@ -67,7 +69,7 @@ const NewBlogForm = ({ createBlog }) => {
 }
 
 NewBlogForm.propTypes = {
-  createBlog: PropTypes.func.isRequired
+  createBlog: PropTypes.func.isRequired,
 }
 
 export default NewBlogForm
