@@ -1,12 +1,17 @@
 import { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { createNewBlog } from '../reducers/blogReducer'
+import { setNotificacion } from '../reducers/notificationReducer'
 import PropTypes from 'prop-types'
 
-const NewBlogForm = ({ createBlog }) => {
+const NewBlogForm = ({ user, newBlogFormRef }) => {
   const [blog, setBlog] = useState({
     title: '',
     author: '',
     url: '',
   })
+
+  const dispatch = useDispatch()
 
   const handleInputChange = e => {
     const input = e.target.name
@@ -19,8 +24,19 @@ const NewBlogForm = ({ createBlog }) => {
 
   const handleCreateBlog = async e => {
     e.preventDefault()
-    const successful = await createBlog(blog)
-    if (successful) setBlog({ title: '', author: '', url: '' })
+    const res = await dispatch(createNewBlog(blog, user))
+    if (res.status === 201) {
+      dispatch(
+        setNotificacion({
+          message: `the blog ${blog.title} by ${blog.author} was added`,
+          type: '',
+        })
+      )
+      setBlog({ title: '', author: '', url: '' })
+      newBlogFormRef.current.handleVisibility()
+    } else if (res.status === 400) {
+      dispatch(setNotificacion({ message: res.data.error, type: 'error' }))
+    }
   }
 
   // styles
@@ -69,7 +85,8 @@ const NewBlogForm = ({ createBlog }) => {
 }
 
 NewBlogForm.propTypes = {
-  createBlog: PropTypes.func.isRequired,
+  newBlogFormRef: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired,
 }
 
 export default NewBlogForm

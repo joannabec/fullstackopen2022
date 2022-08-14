@@ -1,6 +1,7 @@
-import PropTypes from 'prop-types'
+import { useSelector } from 'react-redux'
 
-const AlertMsg = ({ alert }) => {
+const AlertMsg = () => {
+  const alert = useSelector(state => state.notification)
   const style = {
     color: alert.type === 'error' ? 'red' : 'green',
     fontSize: 20,
@@ -11,15 +12,13 @@ const AlertMsg = ({ alert }) => {
     marginBottom: 10,
   }
 
+  if (!alert.message) return null
+
   return (
     <span className="alert" style={style}>
       {alert.message}
     </span>
   )
-}
-
-AlertMsg.propTypes = {
-  alert: PropTypes.object.isRequired,
 }
 
 export default AlertMsg

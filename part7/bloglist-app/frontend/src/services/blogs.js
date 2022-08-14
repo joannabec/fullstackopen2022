@@ -6,14 +6,18 @@ const getAll = async () => {
   return response.data
 }
 
-const newNote = async blog => {
+const newblog = async blog => {
   const user = JSON.parse(window.localStorage.getItem('user'))
-  const newBlog = await axios.post(baseUrl, blog, {
-    headers: {
-      Authorization: `Bearer ${user.token}`,
-    },
-  })
-  return newBlog
+  try {
+    const response = await axios.post(baseUrl, blog, {
+      headers: {
+        Authorization: `Bearer ${user.token}`,
+      },
+    })
+    return response
+  } catch (error) {
+    return error.response
+  }
 }
 
 const updateBlog = async (blog, id) => {
@@ -23,13 +27,17 @@ const updateBlog = async (blog, id) => {
 
 const removeBlog = async id => {
   const user = JSON.parse(window.localStorage.getItem('user'))
-  const response = await axios.delete(`${baseUrl}/${id}`, {
-    headers: {
-      Authorization: `Bearer ${user.token}`,
-    },
-  })
-  return response
+  try {
+    const response = await axios.delete(`${baseUrl}/${id}`, {
+      headers: {
+        Authorization: `Bearer ${user.token}`,
+      },
+    })
+    return response
+  } catch (error) {
+    return error.response
+  }
 }
 
-const blogService = { getAll, newNote, updateBlog, removeBlog }
+const blogService = { getAll, newblog, updateBlog, removeBlog }
 export default blogService

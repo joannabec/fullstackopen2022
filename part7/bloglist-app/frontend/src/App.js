@@ -1,18 +1,18 @@
 import { useState, useEffect, useRef } from 'react'
-import Blog from './components/Blog'
+import { useDispatch } from 'react-redux'
+import { getAllBlogs } from './reducers/blogReducer'
+import { setNotificacion } from './reducers/notificationReducer'
+import BlogsList from './components/BlogsList'
 import LoginForm from './components/LoginForm'
 import NewBlogForm from './components/NewBlogForm'
 import AlertMsg from './components/AlertMsg'
-import blogService from './services/blogs'
 import loginService from './services/logins'
 import Togglable from './components/Togglable'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [msg, setMsg] = useState(null)
   const newBlogFormRef = useRef()
 
   useEffect(() => {
@@ -20,16 +20,10 @@ const App = () => {
     if (userLogged) {
       setUser(JSON.parse(userLogged))
     }
-    const getBlogs = async () => {
-      try {
-        const allBlogs = await blogService.getAll()
-        setBlogs(allBlogs.sort((a, b) => b.likes - a.likes))
-      } catch (error) {
-        console.log(error)
-      }
-    }
-    getBlogs()
+    dispatch(getAllBlogs())
   }, [])
+
+  const dispatch = useDispatch()
 
   const handleLogin = async e => {
     e.preventDefault()
@@ -41,10 +35,9 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (error) {
-      setMsg({ message: error.response.data.error, type: 'error' })
-      setTimeout(() => {
-        setMsg(null)
-      }, 3000)
+      dispatch(
+        setNotificacion({ message: error.response.data.error, type: 'error' })
+      )
     }
   }
 
@@ -53,64 +46,10 @@ const App = () => {
     setUser(null)
   }
 
-  const handleCreateBlog = async newBlog => {
-    try {
-      const res = await blogService.newNote(newBlog)
-      setBlogs(blogs.concat(res.data))
-      setMsg({
-        message: `the blog ${newBlog.title} by ${newBlog.author} was added`,
-        type: '',
-      })
-      setTimeout(() => {
-        setMsg(null)
-      }, 3000)
-      newBlogFormRef.current.handleVisibility()
-      return true
-    } catch (error) {
-      setMsg({ message: error.response.data.error, type: 'error' })
-      setTimeout(() => {
-        setMsg(null)
-      }, 3000)
-    }
-  }
-
-  const handleUpdateLike = blog => {
-    blogService.updateBlog(
-      {
-        user: blog.user.id,
-        likes: blog.likes + 1,
-        author: blog.author,
-        title: blog.title,
-        url: blog.url,
-      },
-      blog.id
-    )
-
-    const allBlogs = blogs.map(item =>
-      item.id === blog.id ? { ...item, likes: item.likes + 1 } : item
-    )
-    setBlogs(allBlogs.sort((a, b) => b.likes - a.likes))
-  }
-
-  const handleRemoveBlog = async id => {
-    try {
-      const result = await blogService.removeBlog(id)
-      if (result.status === 204) {
-        setBlogs(blogs.filter(item => item.id !== id))
-        setMsg({ message: 'The item has been deleted' })
-        setTimeout(() => {
-          setMsg(null)
-        }, 3000)
-      }
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
   return (
     <div>
       <h1>blogs</h1>
-      {msg && <AlertMsg alert={msg} />}
+      <AlertMsg />
       {!user && (
         <LoginForm
           username={username}
@@ -127,18 +66,10 @@ const App = () => {
           <div>
             <h2>create new</h2>
             <Togglable buttonLabel="Add blog" ref={newBlogFormRef}>
-              <NewBlogForm createBlog={handleCreateBlog} />
+              <NewBlogForm newBlogFormRef={newBlogFormRef} user={user} />
             </Togglable>
           </div>
-          {blogs.map(blog => (
-            <Blog
-              key={blog.id}
-              blog={blog}
-              removeBlog={handleRemoveBlog}
-              user={user}
-              updateLike={handleUpdateLike}
-            />
-          ))}
+          <BlogsList user={user} />
         </div>
       )}
     </div>
