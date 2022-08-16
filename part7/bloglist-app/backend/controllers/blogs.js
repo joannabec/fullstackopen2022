@@ -5,11 +5,17 @@ const Blog = require('../models/blog')
 const User = require('../models/user')
 
 router.get('/', async (request, response) => {
-  const notes = await Blog.find({})
-    .find({})
+  const blogs = await Blog.find({})
     .populate('user', { username: 1, name: 1 })
 
-  response.json(notes)
+  response.json(blogs)
+})
+
+router.get('/:id', async (request, response) => {
+  const blog = await Blog.findById(request.params.id)
+    .populate('user', { username: 1, name: 1 })
+
+  response.json(blog)
 })
 
 router.post('/', async (request, response) => {
@@ -26,6 +32,16 @@ router.post('/', async (request, response) => {
   await user.save()
 
   response.status(201).json(savedBlog)
+})
+
+router.post('/:id/comments', async (request, response) => {
+  const { comment } = request.body
+  const blog = await Blog.findById(request.params.id)
+
+  blog.comments = blog.comments.concat({ body: comment })
+  await blog.save()
+
+  response.status(201).json(blog)
 })
 
 router.delete('/:id', async (request, response) => {

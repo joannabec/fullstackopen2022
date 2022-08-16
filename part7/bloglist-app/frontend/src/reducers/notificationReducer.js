@@ -15,7 +15,7 @@ const notificationReducer = createSlice({
 
 const { setMsg, delMsg } = notificationReducer.actions
 
-export const setNotificacion = ({ message, type }) => {
+export const setNotification = ({ message, type }) => {
   return dispatch => {
     dispatch(setMsg({ message, type }))
     setTimeout(() => {

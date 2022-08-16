@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { createNewBlog } from '../reducers/blogReducer'
-import { setNotificacion } from '../reducers/notificationReducer'
+import { setNotification } from '../reducers/notificationReducer'
 import PropTypes from 'prop-types'
 
 const NewBlogForm = ({ user, newBlogFormRef }) => {
@@ -27,7 +27,7 @@ const NewBlogForm = ({ user, newBlogFormRef }) => {
     const res = await dispatch(createNewBlog(blog, user))
     if (res.status === 201) {
       dispatch(
-        setNotificacion({
+        setNotification({
           message: `the blog ${blog.title} by ${blog.author} was added`,
           type: '',
         })
@@ -35,7 +35,7 @@ const NewBlogForm = ({ user, newBlogFormRef }) => {
       setBlog({ title: '', author: '', url: '' })
       newBlogFormRef.current.handleVisibility()
     } else if (res.status === 400) {
-      dispatch(setNotificacion({ message: res.data.error, type: 'error' }))
+      dispatch(setNotification({ message: res.data.error, type: 'error' }))
     }
   }
 

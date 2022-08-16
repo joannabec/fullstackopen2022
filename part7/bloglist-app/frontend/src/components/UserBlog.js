@@ -1,25 +1,14 @@
-import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
-import { getUserById } from '../reducers/usersReducer'
-import { setNotificacion } from '../reducers/notificationReducer'
+import { useSelector } from 'react-redux'
 
 const UserBlog = () => {
-  const [alt, setAlt] = useState('loading...')
-  const dispatch = useDispatch()
-  const [userSelected] = useSelector(state => state.users)
   const id = useParams().id
 
-  useEffect(() => {
-    dispatch(getUserById(id)).then(res => {
-      if (res.status === 400) {
-        dispatch(setNotificacion({ message: res.data.error, type: 'error' }))
-        setAlt('User does not exists')
-      }
-    })
-  }, [])
+  const userSelected = useSelector(state =>
+    state.users.find(item => item.id === id)
+  )
 
-  if (!userSelected) return <p>{alt}</p>
+  if (!userSelected) return <p>Not found</p>
   return (
     <div>
       <h3>{userSelected.name}</h3>

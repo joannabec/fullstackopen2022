@@ -57,7 +57,7 @@ export const deleteBlog = id => {
   }
 }
 
-export const updateBlog = blog => {
+export const updateLike = blog => {
   return async dispatch => {
     const { user } = blog
     const newBlog = await blogService.updateBlog(
@@ -67,10 +67,19 @@ export const updateBlog = blog => {
         author: blog.author,
         title: blog.title,
         url: blog.url,
+        comments: blog.comments,
       },
       blog.id
     )
     dispatch(updatingBlog({ ...newBlog, user }))
+  }
+}
+
+export const createComment = (blog, comment) => {
+  return async dispatch => {
+    const { user } = blog
+    const updateBlog = await blogService.newComment(blog.id, comment)
+    dispatch(updatingBlog({ ...updateBlog.data, user }))
   }
 }
 

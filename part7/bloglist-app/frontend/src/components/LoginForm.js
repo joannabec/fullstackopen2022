@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { loginUser } from '../reducers/loginReducer'
-import { setNotificacion } from '../reducers/notificationReducer'
+import { setNotification } from '../reducers/notificationReducer'
 
 const LoginForm = () => {
   const [username, setUsername] = useState('')
@@ -17,7 +17,7 @@ const LoginForm = () => {
       setPassword('')
     } catch (error) {
       dispatch(
-        setNotificacion({ message: error.response.data.error, type: 'error' })
+        setNotification({ message: error.response.data.error, type: 'error' })
       )
     }
   }
