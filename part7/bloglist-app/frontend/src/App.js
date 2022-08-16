@@ -1,77 +1,49 @@
-import { useState, useEffect, useRef } from 'react'
-import { useDispatch } from 'react-redux'
+import { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+
 import { getAllBlogs } from './reducers/blogReducer'
-import { setNotificacion } from './reducers/notificationReducer'
-import BlogsList from './components/BlogsList'
+import { logoutUser, setLoggedUser } from './reducers/loginReducer'
 import LoginForm from './components/LoginForm'
-import NewBlogForm from './components/NewBlogForm'
 import AlertMsg from './components/AlertMsg'
-import loginService from './services/logins'
-import Togglable from './components/Togglable'
+import Blogs from './components/Blogs'
+import UsersList from './components/UsersList'
+import UserBlog from './components/UserBlog'
 
 const App = () => {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
-  const newBlogFormRef = useRef()
+  const dispatch = useDispatch()
+  const user = useSelector(state => state.login)
 
   useEffect(() => {
     const userLogged = window.localStorage.getItem('user')
     if (userLogged) {
-      setUser(JSON.parse(userLogged))
+      dispatch(setLoggedUser(JSON.parse(userLogged)))
     }
     dispatch(getAllBlogs())
   }, [])
 
-  const dispatch = useDispatch()
-
-  const handleLogin = async e => {
-    e.preventDefault()
-
-    try {
-      const response = await loginService.login({ username, password })
-      setUser(response)
-      window.localStorage.setItem('user', JSON.stringify(response))
-      setUsername('')
-      setPassword('')
-    } catch (error) {
-      dispatch(
-        setNotificacion({ message: error.response.data.error, type: 'error' })
-      )
-    }
-  }
-
   const handleLogout = () => {
-    window.localStorage.removeItem('user')
-    setUser(null)
+    dispatch(logoutUser(null))
   }
 
   return (
     <div>
       <h1>blogs</h1>
       <AlertMsg />
-      {!user && (
-        <LoginForm
-          username={username}
-          password={password}
-          setPassword={setPassword}
-          setUsername={setUsername}
-          handleLogin={handleLogin}
-        />
-      )}
-      {user && (
-        <div>
-          <span>{user.name} logged in</span>{' '}
-          <button onClick={handleLogout}>log out</button>
+      {!user && <LoginForm />}
+      <Router>
+        {user && (
           <div>
-            <h2>create new</h2>
-            <Togglable buttonLabel="Add blog" ref={newBlogFormRef}>
-              <NewBlogForm newBlogFormRef={newBlogFormRef} user={user} />
-            </Togglable>
+            <span>{user.name} logged in</span>{' '}
+            <button onClick={handleLogout}>log out</button>
+            <Routes>
+              <Route path="/users" element={<UsersList />} />
+              <Route path="/users/:id" element={<UserBlog />} />
+              <Route path="/" element={<Blogs user={user} />} />
+            </Routes>
           </div>
-          <BlogsList user={user} />
-        </div>
-      )}
+        )}
+      </Router>
     </div>
   )
 }
