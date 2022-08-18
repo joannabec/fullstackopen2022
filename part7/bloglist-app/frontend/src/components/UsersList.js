@@ -2,6 +2,8 @@ import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { getAllUsers } from '../reducers/usersReducer'
+import { Heading } from '../style/headings'
+import { TableUsers } from '../style/elements'
 
 const UsersList = () => {
   const dispatch = useDispatch()
@@ -13,8 +15,8 @@ const UsersList = () => {
 
   return (
     <div>
-      <h2>Users</h2>
-      <table>
+      <Heading h2>Users</Heading>
+      <TableUsers>
         <thead>
           <tr>
             <th></th>
@@ -31,7 +33,7 @@ const UsersList = () => {
             </tr>
           ))}
         </tbody>
-      </table>
+      </TableUsers>
     </div>
   )
 }

@@ -6,6 +6,7 @@ import {
 } from 'react-router-dom'
 import App from './App'
 import store from './store'
+import './style/globals.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <Provider store={store}>

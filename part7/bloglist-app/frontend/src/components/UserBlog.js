@@ -1,5 +1,6 @@
 import { useParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
+import { Heading } from '../style/headings'
 
 const UserBlog = () => {
   const id = useParams().id
@@ -11,8 +12,8 @@ const UserBlog = () => {
   if (!userSelected) return <p>Not found</p>
   return (
     <div>
-      <h3>{userSelected.name}</h3>
-      <h4>Added blogs</h4>
+      <Heading h3>{userSelected.name}</Heading>
+      <Heading h4>Added blogs</Heading>
       <ul>
         {userSelected.blogs.map(blog => (
           <li key={blog.title}>{blog.title}</li>

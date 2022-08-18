@@ -24,6 +24,7 @@ export const loginUser = credentials => {
 export const logoutUser = () => {
   return dispatch => {
     dispatch(setUser(null))
+    window.localStorage.clear()
   }
 }
 

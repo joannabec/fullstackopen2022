@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux'
 import { createNewBlog } from '../reducers/blogReducer'
 import { setNotification } from '../reducers/notificationReducer'
 import PropTypes from 'prop-types'
+import { ButtonAction, Form } from '../style/elements'
 
 const NewBlogForm = ({ user, newBlogFormRef }) => {
   const [blog, setBlog] = useState({
@@ -39,17 +40,9 @@ const NewBlogForm = ({ user, newBlogFormRef }) => {
     }
   }
 
-  // styles
-  const fieldContainer = {
-    width: '30%',
-    display: 'flex',
-    flexDirection: 'column',
-    marginBottom: '10px',
-  }
-
   return (
-    <form onSubmit={handleCreateBlog}>
-      <div style={fieldContainer}>
+    <Form onSubmit={handleCreateBlog}>
+      <div>
         <label htmlFor="title">title: </label>
         <input
           id="title"
@@ -59,7 +52,7 @@ const NewBlogForm = ({ user, newBlogFormRef }) => {
           placeholder="Add the title"
         />
       </div>
-      <div style={fieldContainer}>
+      <div>
         <label htmlFor="author">author: </label>
         <input
           id="author"
@@ -69,7 +62,7 @@ const NewBlogForm = ({ user, newBlogFormRef }) => {
           placeholder="Add the author"
         />
       </div>
-      <div style={fieldContainer}>
+      <div>
         <label htmlFor="url">url: </label>
         <input
           id="url"
@@ -79,8 +72,8 @@ const NewBlogForm = ({ user, newBlogFormRef }) => {
           placeholder="Add the url"
         />
       </div>
-      <button type="submit">create</button>
-    </form>
+      <ButtonAction type="submit">create</ButtonAction>
+    </Form>
   )
 }
 

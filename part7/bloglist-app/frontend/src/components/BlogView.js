@@ -2,6 +2,8 @@ import { useParams } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { deleteBlog, updateLike, createComment } from '../reducers/blogReducer'
 import { setNotification } from '../reducers/notificationReducer'
+import { Heading } from '../style/headings'
+import { BlogContainer, Button, ButtonAction, CommentsContainer } from '../style/elements'
 
 const BlogView = () => {
   const dispatch = useDispatch()
@@ -16,15 +18,18 @@ const BlogView = () => {
   }
 
   const handleRemoveBlog = async () => {
-    const res = await dispatch(deleteBlog(id))
-    if (res.status === 204) {
-      dispatch(
-        setNotification({ message: 'The item has been deleted', type: '' })
-      )
-    } else {
-      dispatch(
-        setNotification({ message: 'An error has ocurr', type: 'error' })
-      )
+    const confirmation = window.confirm(`Remove blog ${blogSelected.title}`)
+    if(confirmation) {
+      const res = await dispatch(deleteBlog(id))
+      if (res.status === 204) {
+        dispatch(
+          setNotification({ message: 'The item has been deleted', type: '' })
+        )
+      } else {
+        dispatch(
+          setNotification({ message: 'An error has ocurr', type: 'error' })
+        )
+      }
     }
   }
 
@@ -37,20 +42,22 @@ const BlogView = () => {
   if (!blogSelected) return <p>Not found</p>
   return (
     <div>
-      <h2>{blogSelected.title}</h2>
-      <a href={blogSelected.url}>{blogSelected.url}</a>
-      <div>
-        <span>{blogSelected.likes} likes</span>
-        <button onClick={handleUpdateLike}>likes</button>
-      </div>
-      {user.username === blogSelected.user.username && (
-        <button onClick={handleRemoveBlog}>remove</button>
-      )}
-      <div>
-        <h3>Comments</h3>
+      <BlogContainer>
+        <Heading h2>{blogSelected.title}</Heading>
+        <a href={blogSelected.url}>{blogSelected.url}</a>
+        <div>
+          <span>{blogSelected.likes} likes</span>
+          <Button onClick={handleUpdateLike}>likes</Button>
+        </div>
+        {user.username === blogSelected.user.username && (
+          <ButtonAction onClick={handleRemoveBlog}>remove</ButtonAction>
+        )}
+      </BlogContainer>
+      <CommentsContainer>
+        <Heading h3>Comments</Heading>
         <form onSubmit={handleComment}>
           <input name="comment" />
-          <button>add comment</button>
+          <ButtonAction>add comment</ButtonAction>
         </form>
         {blogSelected.comments.length ? (
           <ul>
@@ -59,9 +66,9 @@ const BlogView = () => {
             ))}
           </ul>
         ) : (
-          <p>This blog does not have comments</p>
+          <p>No comments</p>
         )}
-      </div>
+      </CommentsContainer>
     </div>
   )
 }

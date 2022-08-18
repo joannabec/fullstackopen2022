@@ -2,6 +2,9 @@ import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { loginUser } from '../reducers/loginReducer'
 import { setNotification } from '../reducers/notificationReducer'
+import { ButtonAction, Container, Form } from '../style/elements'
+import { Heading } from '../style/headings'
+import AlertMsg from './AlertMsg'
 
 const LoginForm = () => {
   const [username, setUsername] = useState('')
@@ -23,27 +26,31 @@ const LoginForm = () => {
   }
 
   return (
-    <form onSubmit={handleLogin}>
-      <div>
-        <input
-          type="text"
-          name="username"
-          value={username}
-          placeholder="username"
-          onChange={({ target }) => setUsername(target.value)}
-        />
-      </div>
-      <div>
-        <input
-          type="text"
-          name="password"
-          value={password}
-          placeholder="password"
-          onChange={({ target }) => setPassword(target.value)}
-        />
-      </div>
-      <button type="submit">Login</button>
-    </form>
+    <Container>
+      <Heading>Login</Heading>
+      <AlertMsg />
+      <Form onSubmit={handleLogin}>
+        <div>
+          <input
+            type="text"
+            name="username"
+            value={username}
+            placeholder="username"
+            onChange={({ target }) => setUsername(target.value)}
+          />
+        </div>
+        <div>
+          <input
+            type="text"
+            name="password"
+            value={password}
+            placeholder="password"
+            onChange={({ target }) => setPassword(target.value)}
+          />
+        </div>
+        <ButtonAction type="submit">Login</ButtonAction>
+      </Form>
+    </Container>
   )
 }
 

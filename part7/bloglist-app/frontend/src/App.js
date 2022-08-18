@@ -11,6 +11,9 @@ import UsersList from './components/UsersList'
 import UserBlog from './components/UserBlog'
 import BlogView from './components/BlogView'
 
+import { Header, Container, TopBar, Nav, Button, User } from './style/elements'
+import { Heading } from './style/headings'
+
 const App = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -31,27 +34,40 @@ const App = () => {
 
   return (
     <div>
-      <AlertMsg />
-      {!user ? <LoginForm /> :
-        (
-          <div>
-            <header>
-              <nav>
-                <Link to="/">blogs</Link>
-                <Link to="/users">users</Link>
-              </nav>
-              <span>{user.name} logged in</span>{' '}
-              <button onClick={handleLogout}>log out</button>
-            </header>
-            <h1>blog app</h1>
+      {!user ? (
+        <LoginForm />
+      ) : (
+        <div>
+          <Header>
+            <Container>
+              <TopBar>
+                <Nav>
+                  <Link to="/">blogs</Link>
+                  <Link to="/users">users</Link>
+                </Nav>
+                <div>
+                  <User>{user.name} logged in</User>{' '}
+                  <Button secondary onClick={handleLogout}>
+                    log out
+                  </Button>
+                </div>
+              </TopBar>
+            </Container>
+          </Header>
+          <Container>
+            <AlertMsg />
+          </Container>
+          <Container>
+            <Heading>Blog app</Heading>
             <Routes>
               <Route path="/users" element={<UsersList />} />
               <Route path="/users/:id" element={<UserBlog />} />
               <Route path="blogs/:id" element={<BlogView />} />
               <Route path="/" element={<Blogs user={user} />} />
             </Routes>
-          </div>
-        )}
+          </Container>
+        </div>
+      )}
     </div>
   )
 }
