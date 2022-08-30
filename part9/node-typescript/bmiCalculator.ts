@@ -10,7 +10,7 @@ const calculateBmi = (h: number, w: number): void => {
   if(bmi >= 30 && bmi <= 34.9) console.log('Obese (Class I)');
   if(bmi >= 35 && bmi <= 39.9) console.log('Obese (Class II)');
   if(bmi >= 40) console.log('Obese (Class III)');
-}
+};
 
 interface measures {
   height: number;
@@ -23,14 +23,14 @@ const parseArguments = (args: Array<string>): measures => {
   const num1 = +args[2];
   const num2 = +args[3];
 
-  if(!isNaN(num1) && !isNaN(num2)) return { height: num1, weight: num2 }
+  if(!isNaN(num1) && !isNaN(num2)) return { height: num1, weight: num2 };
   else throw Error('You should provide valid numbers');
-}
+};
 
 try {
   const { height, weight } = parseArguments(process.argv);
   calculateBmi(height, weight);
 } catch (error: unknown) {
-  if(error instanceof Error) console.log('Error: ' + error.message)
-  else console.log('Something went wrong')
+  if(error instanceof Error) console.log('Error: ' + error.message);
+  else console.log('Something went wrong');
 }

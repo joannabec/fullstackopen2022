@@ -41,7 +41,7 @@ const LoginForm = () => {
         </div>
         <div>
           <input
-            type="text"
+            type="password"
             name="password"
             value={password}
             placeholder="password"

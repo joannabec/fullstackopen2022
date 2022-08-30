@@ -107,7 +107,19 @@ export const BlogContainer = styled.div`
   }
 
   button {
-    margin: 5px 0;
+    margin-top: 5px;
+  }
+
+  &>div {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  h2 {
+    margin-bottom: 0;
+    margin-right: 15px;
+    line-height: 1;
   }
 `
 export const CommentsContainer = styled.div`

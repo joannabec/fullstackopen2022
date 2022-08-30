@@ -43,15 +43,17 @@ const BlogView = () => {
   return (
     <div>
       <BlogContainer>
-        <Heading h2>{blogSelected.title}</Heading>
+        <div>
+          <Heading h2>{blogSelected.title}</Heading>
+          {user.username === blogSelected.user.username && (
+            <Button onClick={handleRemoveBlog}>remove</Button>
+          )}
+        </div>
         <a href={blogSelected.url}>{blogSelected.url}</a>
         <div>
           <span>{blogSelected.likes} likes</span>
-          <Button onClick={handleUpdateLike}>likes</Button>
+          <ButtonAction onClick={handleUpdateLike}>likes</ButtonAction>
         </div>
-        {user.username === blogSelected.user.username && (
-          <ButtonAction onClick={handleRemoveBlog}>remove</ButtonAction>
-        )}
       </BlogContainer>
       <CommentsContainer>
         <Heading h3>Comments</Heading>
