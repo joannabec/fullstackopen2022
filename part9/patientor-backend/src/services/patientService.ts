@@ -10,7 +10,11 @@ export const getPublicPatientsInfo = (): Array<publicPatientInfo> => {
 
 export const createPatient = (newInfo: NewPatientInfo): Patient => {
   const id: string = uuidv4();
-  return {
-    id, ...newInfo
-  };
+  const newPatient = {  id, ...newInfo, entries: [] };
+  patientsList.push(newPatient);
+  return newPatient;  
+};
+
+export const getPatientInfo = (id: string): Patient | undefined => {
+  return patientsList.find(patient => patient.id === id);
 };
