@@ -1,7 +1,8 @@
 import React from "react";
 import { Rating } from "@material-ui/lab";
 import FavoriteIcon from "@material-ui/icons/Favorite";
-import { withStyles } from "@material-ui/core";
+import { Grid, withStyles } from "@material-ui/core";
+import { Typography } from '@mui/material';
 
 type BarProps = {
   rating: number;
@@ -26,7 +27,7 @@ const HEALTHBAR_TEXTS = [
 
 const HealthRatingBar = ({ rating, showText }: BarProps) => {
   return (
-    <div className="health-bar">
+    <Grid container className="health-bar">
       <StyledRating
         readOnly
         value={4 - rating}
@@ -34,8 +35,8 @@ const HealthRatingBar = ({ rating, showText }: BarProps) => {
         icon={<FavoriteIcon fontSize="inherit" />}
       />
 
-      {showText ? <p>{HEALTHBAR_TEXTS[rating]}</p> : null}
-    </div>
+      {showText ? <Typography ml={1}>{HEALTHBAR_TEXTS[rating]}</Typography> : null}
+    </Grid>
   );
 };
 
